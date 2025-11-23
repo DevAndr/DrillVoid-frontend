@@ -1,4 +1,6 @@
 export const NotificationsRender = () => {
+  return null;
+
   return (
     <div className="fixed inset-0 flex flex-col items-center justify-center p-4">
       {/*{notifications.map((n) => {*/}

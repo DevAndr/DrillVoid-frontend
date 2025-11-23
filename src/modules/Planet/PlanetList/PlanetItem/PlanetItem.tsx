@@ -1,25 +1,35 @@
 import { motion } from "framer-motion";
 import { FC } from "react";
 
-import { formatNumberShort, getColorNameByRarity } from "@/utils";
+import { formatNumberShort, getColorNameByRarity, pluralize } from "@/utils";
 import { Planet } from "@/api/planet/types.ts";
+import PlanetIcon from "@/assets/icons/Planet.tsx";
+import { RarityPlanetLabel } from "@/modules/Planet/PlanetList/PlanetItem/components/RarityPlanetLabel.tsx";
 
 const rarityColors = {
-  COMMON: "text-gray-400 border-gray-600",
-  UNCOMMON: "text-blue-400 border-blue-600",
+  COMMON: "text-emerald-400 border-gray-600",
+  UNCOMMON: "text-indigo-400 border-blue-600",
   RARE: "text-purple-400 border-purple-600",
-  EPIC: "text-pink-400 border-pink-600",
-  LEGENDARY: "text-yellow-400 border-yellow-600 animate-pulse",
+  EPIC: "text-amber-400 border-pink-600",
+  LEGENDARY: "text-red-400 border-yellow-600 animate-pulse",
 };
 
-const biomeGradients = {
-  FROZEN: "from-cyan-900/80 to-blue-950/90",
-  TOXIC: "from-green-900/80 to-emerald-950/90",
-  LUSH: "from-emerald-800/80 to-green-950/90",
-  BLACKHOLE: "from-purple-950/90 via-black to-pink-950/90",
-  ROCKY: "from-orange-900/70 to-red-950/90",
-  SCORCHED: "from-red-900/80 to-orange-950/90",
-  EXOTIC: "from-indigo-900/90 via-purple-900 to-pink-900/90",
+const biomeGradients: Record<string, string> = {
+  FROZEN:
+    "linear-gradient(to bottom, rgba(6, 182, 212, 0.3), rgba(30, 58, 138, 0.6))",
+  TOXIC:
+    "linear-gradient(to bottom, rgba(34, 197, 94, 0.4), rgba(20, 184, 166, 0.6))",
+  LUSH: "linear-gradient(to bottom, rgba(16, 185, 129, 0.4), rgba(34, 197, 94, 0.6))",
+  BLACKHOLE:
+    "linear-gradient(to bottom, rgba(147, 51, 234, 0.6), rgba(0, 0, 0, 1))",
+  SCORCHED:
+    "linear-gradient(to bottom, rgba(239, 68, 68, 0.4), rgba(249, 115, 22, 0.6))",
+  EXOTIC:
+    "linear-gradient(to bottom, rgba(168, 85, 247, 0.6), rgba(236, 72, 153, 0.6))",
+  ROCKY:
+    "linear-gradient(to bottom, rgba(251, 146, 60, 0.3), rgba(120, 53, 15, 0.6))",
+  // fallback
+  DEFAULT: "linear-gradient(to bottom, from-gray-900 to-black)",
 };
 
 export const rarityConfig = {
@@ -62,17 +72,29 @@ export const rarityConfig = {
 
 interface Props {
   planet: Planet;
+  onClick?: () => void;
 }
 
-export const PlanetItem: FC<Props> = ({ planet }) => {
+export const PlanetItem: FC<Props> = ({ planet, onClick }) => {
   const colorName = getColorNameByRarity(planet.rarity);
   const totalResources = planet.resources.reduce(
     (a: number, r: any) => a + r.totalAmount,
     0,
   );
+  const epicCount = planet.resources.filter(
+    (r: any) => r.rarity === "EPIC",
+  ).length;
+
   const legendaryCount = planet.resources.filter(
     (r: any) => r.rarity === "LEGENDARY",
   ).length;
+
+  const maxRarity =
+    legendaryCount > 0
+      ? "LEGENDARY"
+      : epicCount > 0
+        ? "EPIC"
+        : planet.resources[0]?.rarity || "COMMON";
 
   return (
     <motion.div
@@ -81,133 +103,111 @@ export const PlanetItem: FC<Props> = ({ planet }) => {
                  transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/20"
       initial={{ opacity: 0, y: 20 }}
       style={{
-        backgroundImage: `linear-gradient(to bottom, ${biomeGradients[planet.biome as keyof typeof biomeGradients] || "from-gray-900 to-black"})`,
-        borderColor: legendaryCount > 0 ? "#f59e0b" : "#374151",
+        backgroundImage: biomeGradients.DEFAULT,
+        borderColor:
+          legendaryCount > 0
+            ? "#f5510b"
+            : epicCount > 0
+              ? "#f59e0b"
+              : "#212834",
         boxShadow:
           legendaryCount > 0
-            ? "0 0 30px rgba(251, 191, 36, 0.4)"
-            : "0 4px 20px rgba(0,0,0,0.5)",
+            ? "rgb(251 97 36 / 40%) 0px 0px 30px"
+            : epicCount > 0
+              ? "0 0 30px rgba(251, 191, 36, 0.4)"
+              : "0 4px 20px rgba(0,0,0,0.5)",
       }}
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
+      onClick={onClick}
     >
       {/* Glow для легендарных */}
       {legendaryCount > 0 && (
+        <div className="absolute inset-0 bg-red-500/10 blur-3xl animate-pulse" />
+      )}
+      {epicCount > 0 && (
         <div className="absolute inset-0 bg-yellow-500/10 blur-3xl animate-pulse" />
       )}
 
-      <div className="p-5 relative z-10">
+      <motion.div
+        animate={{ scale: 1, opacity: 1 }}
+        className="relative"
+        initial={{ scale: 0, opacity: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
+        {/* ВСПЫШКА ПРИ ОТКРЫТИИ ЛЕГЕНДАРКИ */}
+        {maxRarity === "LEGENDARY" && (
+          <motion.div
+            animate={{ scale: 4, opacity: 0 }}
+            className="absolute inset-0 rounded-3xl"
+            initial={{ scale: 0, opacity: 1 }}
+            style={{
+              background:
+                "radial-gradient(circle, #fbbf24 10%, transparent 70%)",
+              filter: "blur(20px)",
+            }}
+            transition={{ duration: 1.2 }}
+          />
+        )}
+
+        <div className="flex items-center justify-center">
+          <PlanetIcon biome={planet.biome} size={80} />
+        </div>
+      </motion.div>
+      <div className="p-4 pt-0 relative z-10">
         {/* Название + биом */}
-        <h3 className={`text-xl font-bold tracking-wider ${colorName}`}>
+        <h3
+          className={`text-xl text-center font-bold tracking-wider ${colorName}`}
+        >
           {planet.name}
         </h3>
-        <div className="flex items-center gap-3 mt-1 text-sm">
-          <span className="px-3 py-1 rounded-full bg-white/10 text-white/80 border border-white/20">
+
+        <div className="flex items-center gap-3 mt-1 text-small">
+          <span className="px-2 py-1 text-xs rounded-full bg-white/10 text-white/80 border border-white/20">
             {planet.biome.toLowerCase()}
           </span>
-          {legendaryCount > 0 && (
-            <span className="flex items-center gap-1 text-yellow-400 font-bold">
-              LEGENDARY
-            </span>
-          )}
+          <RarityPlanetLabel rarity={planet.rarity} />
         </div>
 
         {/* Ресурсы */}
         <div className="mt-4 space-y-2">
           {planet.resources
-            .sort(
-              (a: any, b: any) =>
-                ["LEGENDARY", "EPIC", "RARE", "UNCOMMON", "COMMON"].indexOf(
-                  b.rarity,
-                ) -
-                ["LEGENDARY", "EPIC", "RARE", "UNCOMMON", "COMMON"].indexOf(
-                  a.rarity,
-                ),
-            )
-            .map((res: any) => {
-              const cfg = rarityConfig[res.rarity as keyof typeof rarityConfig];
-              const isEpicOrHigher = ["EPIC", "LEGENDARY"].includes(res.rarity);
-
-              return (
-                <motion.div
-                  key={`${res.type}-${res.rarity}`}
-                  animate={{ opacity: 1, x: 0 }}
-                  className={`relative overflow-hidden rounded-xl p-3 border ${cfg.border} ${cfg.bg} ${cfg.animate || ""}`}
-                  initial={{ opacity: 0, x: -20 }}
-                  transition={{ delay: 0.1 }}
+            .sort((a: any, b: any) => b.totalAmount - a.totalAmount)
+            .slice(0, 4) // Показываем топ-4
+            .map((res: any, i: number) => (
+              <div
+                key={i}
+                className="flex justify-between items-center text-xs"
+              >
+                <span
+                  className={`font-medium ${rarityColors[res.rarity as keyof typeof rarityColors] || "text-gray-300"}`}
                 >
-                  {/* РАДУЖНЫЙ ГРАДИЕНТ ДЛЯ ЛЕГЕНДАРОК */}
-                  {res.rarity === "LEGENDARY" && (
-                    <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-600 opacity-30 animate-rainbow" />
-                  )}
-
-                  {/* ПАРТИКЛЫ (простые точки) */}
-                  {cfg.particles && (
-                    <>
-                      <div className="absolute inset-0 flex justify-center items-center pointer-events-none">
-                        {[...Array(6)].map((_, i) => (
-                          <motion.div
-                            key={i}
-                            animate={{
-                              y: [-20, 20],
-                              opacity: [0, 1, 0],
-                            }}
-                            className="absolute w-1 h-1 bg-white rounded-full"
-                            style={{ left: `${20 + i * 15}%` }}
-                            transition={{
-                              duration: 2 + i * 0.3,
-                              repeat: Infinity,
-                              ease: "easeOut",
-                            }}
-                          />
-                        ))}
-                      </div>
-                    </>
-                  )}
-
-                  <div className="relative z-10 flex justify-between items-center">
-                    <div className="flex items-center gap-2">
-                      {/* Иконки редкости */}
-                      {res.rarity === "LEGENDARY" && "✦ "}
-                      {res.rarity === "EPIC" && "◆ "}
-                      {res.rarity === "RARE" && "★ "}
-                      <span className={`font-bold ${cfg.text} drop-shadow-lg`}>
-                        {res.type}
-                      </span>
-                      {res.rarity === "LEGENDARY" && " ✦"}
-                    </div>
-
-                    <span className="font-mono text-white/90 text-lg font-bold">
-                      {(res.totalAmount / 1000).toFixed(0)}k
-                    </span>
-                  </div>
-
-                  {/* Подсветка снизу */}
-                  {isEpicOrHigher && (
-                    <div
-                      className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${
-                        res.rarity === "LEGENDARY"
-                          ? "from-yellow-400 via-pink-500 to-purple-600"
-                          : "from-pink-500 to-purple-600"
-                      }`}
-                    />
-                  )}
-                </motion.div>
-              );
-            })}
+                  {res.type.toString().toLowerCase()}
+                </span>
+                <span className="text-white/80 font-mono">
+                  {formatNumberShort(res.totalAmount)}
+                </span>
+              </div>
+            ))}
 
           {planet.resources.length > 4 && (
             <div className="text-xs text-gray-400 pt-1">
-              + {planet.resources.length - 4} more...
+              + {planet.resources.length - 4} еще...
             </div>
           )}
         </div>
 
         {/* Нижняя строка */}
         <div className="mt-4 pt-3 border-t border-white/10 flex justify-between text-xs text-gray-400">
-          <span>{planet.resources.length} resources</span>
+          <span>
+            {pluralize(planet.resources.length, [
+              "ресурс",
+              "ресурса",
+              "ресурсов",
+            ])}
+          </span>
           <span className="font-mono text-white/70">
-            {formatNumberShort(totalResources)} total
+            {formatNumberShort(totalResources)} всего
           </span>
         </div>
       </div>

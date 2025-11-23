@@ -3,4 +3,21 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes rainbow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.animate-rainbow {
+    background: linear-gradient(90deg, #f59e0b, #ec4899, #a855f7, #3b82f6, #10b981, #f59e0b);
+    background-size: 600% 600%;
+    animation: rainbow 8s ease infinite;
+}
+
+.animate-pulse-slow {
+    animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
 @config "../../tailwind.config.js"
+
