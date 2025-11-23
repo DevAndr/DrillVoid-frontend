@@ -6,7 +6,7 @@ import { Planet } from "@/api/planet/types.ts";
 import PlanetIcon from "@/assets/icons/Planet.tsx";
 import { RarityPlanetLabel } from "@/modules/Planet/PlanetList/PlanetItem/components/RarityPlanetLabel.tsx";
 
-const rarityColors = {
+export const rarityColors = {
   COMMON: "text-emerald-400 border-gray-600",
   UNCOMMON: "text-indigo-400 border-blue-600",
   RARE: "text-purple-400 border-purple-600",

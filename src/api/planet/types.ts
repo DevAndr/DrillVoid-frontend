@@ -92,3 +92,7 @@ export type Planet = {
   seed: string;
   position: Point3D;
 };
+
+export type PlanetDetails = Planet & {
+  isCreated: boolean;
+};
