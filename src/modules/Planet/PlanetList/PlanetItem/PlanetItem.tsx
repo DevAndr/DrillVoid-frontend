@@ -14,20 +14,20 @@ export const rarityColors = {
   LEGENDARY: "text-red-400 border-yellow-600 animate-pulse",
 };
 
-const biomeGradients: Record<string, string> = {
+export const biomeGradients: Record<string, string> = {
   FROZEN:
-    "linear-gradient(to bottom, rgba(6, 182, 212, 0.3), rgba(30, 58, 138, 0.6))",
+    "linear-gradient(to bottom, rgba(6, 198, 212, 0.3), rgba(29, 52, 117, 0.6))",
   TOXIC:
-    "linear-gradient(to bottom, rgba(34, 197, 94, 0.4), rgba(20, 184, 166, 0.6))",
-  LUSH: "linear-gradient(to bottom, rgba(16, 185, 129, 0.4), rgba(34, 197, 94, 0.6))",
+    "linear-gradient(to bottom, rgba(140, 197, 34, 0.4), rgba(15, 121, 108, 0.6))",
+  LUSH: "linear-gradient(to bottom, rgba(185, 174, 16, 0.4), rgba(197, 34, 97, 0.6))",
   BLACKHOLE:
-    "linear-gradient(to bottom, rgba(147, 51, 234, 0.6), rgba(0, 0, 0, 1))",
+    "linear-gradient(to bottom, rgba(234, 222, 51, 0.6), rgba(0, 0, 0, 1))",
   SCORCHED:
     "linear-gradient(to bottom, rgba(239, 68, 68, 0.4), rgba(249, 115, 22, 0.6))",
   EXOTIC:
     "linear-gradient(to bottom, rgba(168, 85, 247, 0.6), rgba(236, 72, 153, 0.6))",
   ROCKY:
-    "linear-gradient(to bottom, rgba(251, 146, 60, 0.3), rgba(120, 53, 15, 0.6))",
+    "linear-gradient(to bottom, rgba(255, 171, 103, 0.3), rgba(65, 29, 8, 0.6))",
   // fallback
   DEFAULT: "linear-gradient(to bottom, from-gray-900 to-black)",
 };
