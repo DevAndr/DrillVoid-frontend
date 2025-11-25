@@ -7,11 +7,11 @@ import PlanetIcon from "@/assets/icons/Planet.tsx";
 import { RarityPlanetLabel } from "@/modules/Planet/PlanetList/PlanetItem/components/RarityPlanetLabel.tsx";
 
 export const rarityColors = {
-  COMMON: "text-emerald-400 border-gray-600",
-  UNCOMMON: "text-indigo-400 border-blue-600",
+  COMMON: "text-emerald-400 border-emerald-600",
+  UNCOMMON: "text-indigo-400 border-indigo-600",
   RARE: "text-purple-400 border-purple-600",
-  EPIC: "text-amber-400 border-pink-600",
-  LEGENDARY: "text-red-400 border-yellow-600 animate-pulse",
+  EPIC: "text-amber-400 border-amber-600",
+  LEGENDARY: "text-red-400 border-red-500 animate-pulse",
 };
 
 export const biomeGradients: Record<string, string> = {

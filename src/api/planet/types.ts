@@ -96,3 +96,12 @@ export type Planet = {
 export type PlanetDetails = Planet & {
   isCreated: boolean;
 };
+
+export type TotalMiningPlanet = {
+  totalTimeMining: string;
+};
+
+export type PayloadTotalTimeMiningPlanet = {
+  uid: string;
+  seed: string;
+};

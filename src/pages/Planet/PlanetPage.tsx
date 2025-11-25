@@ -2,26 +2,18 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Spinner } from "@heroui/spinner";
 import { motion } from "framer-motion";
 import clsx from "clsx";
-import { ChevronLeft, Clock, Pickaxe, Zap } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { Button } from "@heroui/button";
 import { useEffect } from "react";
 
 import { useGetPlanetBySeed } from "@/api/planet/useGetPlanetBySeed.ts";
 import { CenteredLayout } from "@/layouts";
-import { formatNumberShort, isDefined } from "@/utils";
+import { isDefined } from "@/utils";
 import { biomeGradients } from "@/modules/Planet/PlanetList/PlanetItem/PlanetItem.tsx";
 import PlanetIcon from "@/assets/icons/Planet.tsx";
 import { RarityPlanetLabel } from "@/modules/Planet/PlanetList/PlanetItem/components/RarityPlanetLabel.tsx";
-import { getNameRarityForResource } from "@/modules/Planet/PlanetList/PlanetItem/utils/getNameRarityForResource.ts";
-import { ButtonMine } from "@/pages/Planet/components/ButtonMine/ButtonMine.tsx";
-
-const rarityColors = {
-  COMMON: "text-emerald-400 border-emerald-600",
-  UNCOMMON: "text-indigo-400 border-indigo-600",
-  RARE: "text-purple-400 border-purple-600",
-  EPIC: "text-amber-400 border-amber-600",
-  LEGENDARY: "text-red-400 border-red-500",
-};
+import { StatisticPlanet } from "@/modules/Planet/PlanetDetails/Statistic/StatisticPlanet.tsx";
+import { ResourceListPlanet } from "@/modules/Planet/PlanetDetails/ResourceListPlanet/ResourceListPlanet.tsx";
 
 const PlanetPage = () => {
   const navigate = useNavigate();
@@ -50,7 +42,6 @@ const PlanetPage = () => {
     0,
   );
 
-  const isActive = false;
   const canMine = true;
 
   return (
@@ -72,7 +63,7 @@ const PlanetPage = () => {
         <ChevronLeft />
       </Button>
 
-      <div className="relative pb-32">
+      <div className="relative pb-32 pt-20">
         {/* Заголовок + большая иконка планеты */}
         <div className="text-center mb-10">
           <motion.div
@@ -100,9 +91,10 @@ const PlanetPage = () => {
             </div>
           </motion.div>
 
-          <h1 className="text-4xl md:text-5xl font-bold tracking-widest">
+          <h1 className="text-4xl md:text-5xl font-bold tracking-widest px-2 ">
             {data.name}
           </h1>
+          <div className="text-xs text-white/60 mt-2">{data.seed}</div>
           <div className="flex items-center justify-center gap-4 mt-3 text-xs">
             <span className="px-2 py-1 rounded-full bg-white/10 border border-white/20">
               {data.biome}
@@ -112,121 +104,13 @@ const PlanetPage = () => {
         </div>
 
         {/* Статистика */}
-        <div className="max-w-2xl mx-auto px-6 grid grid-cols-3 gap-4 mb-10">
-          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-5 text-center">
-            <Pickaxe className="w-8 h-8 mx-auto mb-2 text-cyan-400" />
-            <div className="text-xl font-bold">{data.resources.length}</div>
-            <div className="text-gray-400 text-sm">Resources</div>
-          </div>
-          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-5 text-center">
-            <Zap className="w-8 h-8 mx-auto mb-2 text-pink-400" />
-            <div className="text-xl font-bold">
-              {formatNumberShort(totalResources)}
-            </div>
-            <div className="text-gray-400 text-sm">Total volume</div>
-          </div>
-          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-5 text-center">
-            <Clock className="w-8 h-8 mx-auto mb-2 text-purple-400" />
-            <div className="text-xl font-bold">~24h</div>
-            <div className="text-gray-400 text-sm">Mining time</div>
-          </div>
-        </div>
+        <StatisticPlanet
+          countResources={data.resources.length}
+          totalAmountResources={totalResources}
+        />
 
         {/* Список ресурсов */}
-        <div className="max-w-2xl mx-auto px-6">
-          <h2 className="text-2xl font-bold mb-6 text-center">
-            Available Resources
-          </h2>
-          <div className="space-y-4">
-            {data.resources
-              .sort(
-                (a: any, b: any) =>
-                  ["LEGENDARY", "EPIC", "RARE", "UNCOMMON", "COMMON"].indexOf(
-                    b.rarity,
-                  ) -
-                  ["LEGENDARY", "EPIC", "RARE", "UNCOMMON", "COMMON"].indexOf(
-                    a.rarity,
-                  ),
-              )
-              .map((res: any, i: number) => (
-                <motion.div
-                  key={i}
-                  animate={{ opacity: 1, x: 0 }}
-                  className={clsx(
-                    "relative overflow-hidden rounded-2xl p-5 border-2 backdrop-blur-xl",
-                    rarityColors[res.rarity as keyof typeof rarityColors],
-                    res.rarity === "LEGENDARY" &&
-                      "bg-red-900/20 shadow-2xl shadow-red-500/50",
-                    res.rarity === "EPIC" &&
-                      "bg-amber-900/20 shadow-2xl shadow-amber-500/40",
-                  )}
-                  initial={{ opacity: 0, x: -50 }}
-                  transition={{ delay: i * 0.1 }}
-                >
-                  {res.rarity === "LEGENDARY" && <LegendarySparkles />}
-                  {res.rarity === "EPIC" && <EpicSparkles />}
-
-                  <div className="flex-1">
-                    <div className="flex justify-between items-center">
-                      <div className="flex items-center gap-3">
-                        <span className="text-2xl font-bold">{res.type}</span>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-3xl font-bold font-mono">
-                          {formatNumberShort(res.totalAmount)}
-                        </div>
-                        <div className="text-sm opacity-70">
-                          {getNameRarityForResource(res.rarity)}
-                        </div>
-                        <div className="text-sm opacity-70 mt-1">
-                          •{" "}
-                          {res.remainingAmount === res.totalAmount
-                            ? "Не тронуто"
-                            : `${((res.remainingAmount / res.totalAmount) * 100).toFixed(0)}% left`}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Прогресс-бар */}
-                  <div className="mt-3 h-3 bg-white/10 rounded-full overflow-hidden">
-                    <motion.div
-                      animate={{
-                        width: `${(res.remainingAmount / res.totalAmount) * 100}%`,
-                      }}
-                      className={clsx(
-                        "h-full",
-                        res.rarity === "LEGENDARY" &&
-                          "bg-gradient-to-r from-yellow-400 to-red-500",
-                        res.rarity === "EPIC" &&
-                          "bg-gradient-to-r from-yellow-400 to-amber-500",
-                        res.rarity === "RARE" &&
-                          "bg-gradient-to-r from-pink-400 to-purple-400",
-                        res.rarity === "UNCOMMON" &&
-                          "bg-gradient-to-r from-sky-400 to-indigo-500",
-                        res.rarity === "COMMON" &&
-                          "bg-gradient-to-r from-lime-400 to-emerald-500",
-                      )}
-                      initial={{ width: 0 }}
-                      transition={{ duration: 1, delay: i * 0.1 }}
-                    />
-                  </div>
-                  <div className="flex flex-col justify-center gap-2 mt-4">
-                    {isActive ? (
-                      <div className="text-right">
-                        <div className="text-green-400 font-bold text-lg animate-pulse">
-                          MINING
-                        </div>
-                        <div className="text-xs text-gray-400">+123/sec</div>
-                      </div>
-                    ) : (
-                      <ButtonMine canMine={canMine} rarity={res.rarity} />
-                    )}
-                  </div>
-                </motion.div>
-              ))}
-          </div>
-        </div>
+        <ResourceListPlanet canMine={canMine} resources={data.resources} />
       </div>
     </div>
   );
@@ -234,7 +118,7 @@ const PlanetPage = () => {
 
 export default PlanetPage;
 
-const LegendarySparkles = () => {
+export const LegendarySparkles = () => {
   const particleCount = 16;
 
   return (
@@ -278,7 +162,7 @@ const LegendarySparkles = () => {
   );
 };
 
-const EpicSparkles = () => (
+export const EpicSparkles = () => (
   <div className="absolute inset-0 pointer-events-none">
     {[...Array(10)].map((_, i) => (
       <motion.div

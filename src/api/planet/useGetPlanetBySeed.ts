@@ -20,7 +20,7 @@ const getPlanetBySeed = async ({ seed }: Request) => {
 
 export const useGetPlanetBySeed = (req: Request) => {
   return useQuery<PlanetDetails, AxiosError>({
-    queryKey: ["planetBySeed"],
+    queryKey: ["planetBySeed", req.seed],
     queryFn: () => getPlanetBySeed(req),
     enabled: !!req.seed,
   });

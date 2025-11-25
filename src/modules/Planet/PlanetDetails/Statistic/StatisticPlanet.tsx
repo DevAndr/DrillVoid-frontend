@@ -2,6 +2,7 @@ import { Clock, Pickaxe, Zap } from "lucide-react";
 import { FC } from "react";
 
 import { formatNumberShort } from "@/utils";
+import { useGetTimeMiningPlanet } from "@/api/planet/useGetTimeMiningPlanet.ts";
 
 interface Props {
   countResources: number;
@@ -12,6 +13,10 @@ export const StatisticPlanet: FC<Props> = ({
   countResources,
   totalAmountResources,
 }) => {
+  const { data: dataTimeMining } = useGetTimeMiningPlanet({
+    payload: { uid: "3eece72d-2880-454c-a66e-702b8e84f7df", seed: "41_53_90" },
+  });
+
   return (
     <div className="max-w-2xl mx-auto px-6 grid grid-cols-3 gap-4 mb-10">
       <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-5 text-center">
@@ -28,7 +33,9 @@ export const StatisticPlanet: FC<Props> = ({
       </div>
       <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-5 text-center">
         <Clock className="w-8 h-8 mx-auto mb-2 text-purple-400" />
-        <div className="text-xl font-bold">~24h</div>
+        <div className="text-xl font-bold">
+          ~{dataTimeMining?.totalTimeMining}h
+        </div>
         <div className="text-gray-400 text-sm">Mining time</div>
       </div>
     </div>

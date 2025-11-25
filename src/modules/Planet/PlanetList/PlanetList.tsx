@@ -12,7 +12,7 @@ export const PlanetList = () => {
   useEffect(() => {
     scanPlanets({
       uid: "",
-      point: { x: 23, y: 32, z: 98 },
+      point: { x: 26, y: 32, z: 98 },
       options: { count: 10, radius: 30 },
     });
   }, []);
@@ -26,7 +26,7 @@ export const PlanetList = () => {
   return (
     <div className="p-4 mb-5 w-full">
       <h1 className="text-2xl text-center text-white mb-8 tracking-widest">
-        Планеты рядом
+        Planets nearby
       </h1>
 
       <div className="flex flex-col gap-4 w-full">
