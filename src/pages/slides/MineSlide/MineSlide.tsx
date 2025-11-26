@@ -1,9 +1,17 @@
-import { PlanetList } from "@/modules/Planet/PlanetList/PlanetList.tsx";
+import { Button } from "@heroui/button";
+
+import { useGameDataState } from "@/store/store.ts";
+import { MiningProcess } from "@/modules/Mining/MiningProcess/MiningProcess.tsx";
 
 const MineSlide = () => {
+  const { currentGameScreen } = useGameDataState();
+
   return (
     <div className="w-full">
-      <PlanetList />
+      <div>
+        <Button>Сканировать космос</Button>
+      </div>
+      {currentGameScreen === "MINING" && <MiningProcess />}
     </div>
   );
 };

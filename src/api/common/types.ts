@@ -19,3 +19,8 @@ export type ResponseServer<T> = {
   meta: Meta;
   data: T;
 };
+
+export type MetaDataTIme = {
+  createdAt: Date;
+  updatedAt: Date;
+};

@@ -7,14 +7,16 @@ import { useGetTimeMiningPlanet } from "@/api/planet/useGetTimeMiningPlanet.ts";
 interface Props {
   countResources: number;
   totalAmountResources: number;
+  seed?: string;
 }
 
 export const StatisticPlanet: FC<Props> = ({
   countResources,
   totalAmountResources,
+  seed,
 }) => {
   const { data: dataTimeMining } = useGetTimeMiningPlanet({
-    payload: { uid: "3eece72d-2880-454c-a66e-702b8e84f7df", seed: "41_53_90" },
+    payload: { uid: "3eece72d-2880-454c-a66e-702b8e84f7df", seed },
   });
 
   return (

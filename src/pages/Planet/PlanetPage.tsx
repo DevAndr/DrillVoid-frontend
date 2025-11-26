@@ -62,6 +62,9 @@ const PlanetPage = () => {
       >
         <ChevronLeft />
       </Button>
+      <div className="text-xs text-white/60 mt-2 fixed right-2">
+        {data.seed}
+      </div>
 
       <div className="relative pb-32 pt-20">
         {/* Заголовок + большая иконка планеты */}
@@ -81,7 +84,7 @@ const PlanetPage = () => {
                   data.biome === "TOXIC" && "from-green-400 to-emerald-800",
                   data.biome === "LUSH" && "from-emerald-400 to-green-800",
                   data.biome === "BLACKHOLE" &&
-                    "from-purple-900 via-black to-pink-900",
+                    "from-yellow-500 via-black/10 to-orange-500",
                   data.biome === "EXOTIC" &&
                     "from-purple-600 via-pink-600 to-indigo-700",
                 )}
@@ -94,7 +97,6 @@ const PlanetPage = () => {
           <h1 className="text-4xl md:text-5xl font-bold tracking-widest px-2 ">
             {data.name}
           </h1>
-          <div className="text-xs text-white/60 mt-2">{data.seed}</div>
           <div className="flex items-center justify-center gap-4 mt-3 text-xs">
             <span className="px-2 py-1 rounded-full bg-white/10 border border-white/20">
               {data.biome}
@@ -106,11 +108,16 @@ const PlanetPage = () => {
         {/* Статистика */}
         <StatisticPlanet
           countResources={data.resources.length}
+          seed={data.seed}
           totalAmountResources={totalResources}
         />
 
         {/* Список ресурсов */}
-        <ResourceListPlanet canMine={canMine} resources={data.resources} />
+        <ResourceListPlanet
+          canMine={canMine}
+          isActive={true}
+          resources={data.resources}
+        />
       </div>
     </div>
   );

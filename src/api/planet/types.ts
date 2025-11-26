@@ -1,4 +1,4 @@
-import { Rarity } from "@/api/common/types.ts";
+import { MetaDataTIme, Rarity } from "@/api/common/types.ts";
 
 export type Point3D = {
   x: number;
@@ -104,4 +104,35 @@ export type TotalMiningPlanet = {
 export type PayloadTotalTimeMiningPlanet = {
   uid: string;
   seed: string;
+};
+
+export type PlanetPrisma = {
+  id: string;
+  seed: string;
+  name: string;
+  type: PlanetType;
+  ownerBy: string;
+  x: number;
+  y: number;
+  z: number;
+  rarity: Rarity;
+  depleted: boolean;
+  resources: PlanetPrismaResource[];
+};
+
+export type PlanetPrismaResource = {
+  id: string;
+  planetId: string;
+  type: ResourceType;
+  totalAmount: number;
+  current: number;
+  drillPowerRequired: number;
+  rarity: Rarity;
+} & MetaDataTIme;
+
+export type JumpResponseData = {
+  planet: Planet;
+  message: string;
+  distance: number;
+  fuelUsed: number;
 };
