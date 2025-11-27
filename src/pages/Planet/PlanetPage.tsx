@@ -2,7 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Spinner } from "@heroui/spinner";
 import { motion } from "framer-motion";
 import clsx from "clsx";
-import { ChevronLeft } from "lucide-react";
+import { ArrowDownToDot, ChevronLeft } from "lucide-react";
 import { Button } from "@heroui/button";
 import { useEffect } from "react";
 
@@ -14,12 +14,16 @@ import PlanetIcon from "@/assets/icons/Planet.tsx";
 import { RarityPlanetLabel } from "@/modules/Planet/PlanetList/PlanetItem/components/RarityPlanetLabel.tsx";
 import { StatisticPlanet } from "@/modules/Planet/PlanetDetails/Statistic/StatisticPlanet.tsx";
 import { ResourceListPlanet } from "@/modules/Planet/PlanetDetails/ResourceListPlanet/ResourceListPlanet.tsx";
+import { usePlanetDetailsState } from "@/store/store.ts";
+import { useJumpToPlanet } from "@/api/planet/useJumpToPlanet.ts";
 
 const PlanetPage = () => {
+  const { isAccessMining } = usePlanetDetailsState();
   const navigate = useNavigate();
   const { seed } = useParams();
   // @ts-ignore
   const { data, isLoading } = useGetPlanetBySeed({ seed });
+  const { mutate: jumpToPlanet } = useJumpToPlanet();
 
   useEffect(() => window.scrollTo(0, 0), []);
 
@@ -42,7 +46,16 @@ const PlanetPage = () => {
     0,
   );
 
-  const canMine = true;
+  const jumpToPlanetHandler = () => {
+    jumpToPlanet(
+      { seed },
+      {
+        onSuccess: (r) => {
+          console.log("success", r);
+        },
+      },
+    );
+  };
 
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden">
@@ -94,7 +107,7 @@ const PlanetPage = () => {
             </div>
           </motion.div>
 
-          <h1 className="text-4xl md:text-5xl font-bold tracking-widest px-2 ">
+          <h1 className="text-4xl md:text-5xl font-bold tracking-widest px-4 ">
             {data.name}
           </h1>
           <div className="flex items-center justify-center gap-4 mt-3 text-xs">
@@ -112,10 +125,22 @@ const PlanetPage = () => {
           totalAmountResources={totalResources}
         />
 
+        {!isAccessMining && (
+          <div className="flex w-full justify-center pb-6">
+            <Button
+              color="primary"
+              startContent={<ArrowDownToDot />}
+              onPress={jumpToPlanetHandler}
+            >
+              Приземлиться
+            </Button>
+          </div>
+        )}
+
         {/* Список ресурсов */}
         <ResourceListPlanet
-          canMine={canMine}
-          isActive={true}
+          isAccessMining={isAccessMining}
+          isActive={false}
           resources={data.resources}
         />
       </div>

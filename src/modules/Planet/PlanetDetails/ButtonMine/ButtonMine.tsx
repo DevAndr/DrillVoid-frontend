@@ -14,7 +14,7 @@ const GRADIENT_BY_RARITY: Record<Rarity, string> = {
 
 interface Props {
   rarity: Rarity;
-  canMine: boolean;
+  canMine?: boolean;
   onClick?: () => void;
 }
 
@@ -22,17 +22,19 @@ export const ButtonMine: FC<Props> = ({ rarity, canMine, onClick }) => {
   const gradientColors = GRADIENT_BY_RARITY[rarity];
 
   return (
-    <Button
-      className={clsx(
-        "px-8 py-4 rounded-2xl font-bold text-lg shadow-xl transition-all",
-        canMine
-          ? `bg-gradient-to-r ${gradientColors} text-white`
-          : "bg-gray-800 text-gray-500 cursor-not-allowed",
-      )}
-      disabled={!canMine}
-      onPress={onClick}
-    >
-      {canMine ? "MINE" : "NO SLOTS"}
-    </Button>
+    canMine && (
+      <Button
+        className={clsx(
+          "px-8 py-4 rounded-2xl font-bold text-lg shadow-xl transition-all",
+          canMine
+            ? `bg-gradient-to-r ${gradientColors} text-white`
+            : "bg-gray-800 text-gray-500 cursor-not-allowed",
+        )}
+        disabled={!canMine}
+        onPress={onClick}
+      >
+        MINE
+      </Button>
+    )
   );
 };

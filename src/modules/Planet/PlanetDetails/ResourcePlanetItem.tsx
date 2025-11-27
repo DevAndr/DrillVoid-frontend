@@ -13,12 +13,12 @@ import { ButtonMine } from "@/modules/Planet/PlanetDetails/ButtonMine/ButtonMine
 
 interface Props {
   resource: ResourcePlanet;
-  canMine: boolean;
+  canMine?: boolean;
   index: number;
 }
 
 export const ResourcePlanetItem: FC<Props> = ({ resource, canMine, index }) => {
-  const [isRunnigMine, setIsRunnigMine] = useState(false);
+  const [isRunningMine, setIsRunningMine] = useState(false);
 
   return (
     <motion.div
@@ -40,7 +40,7 @@ export const ResourcePlanetItem: FC<Props> = ({ resource, canMine, index }) => {
       <div className="flex-1">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <span className="text-2xl font-bold">{resource.type}</span>
+            <span className="text-xl font-bold">{resource.type}</span>
           </div>
           <div className="text-right">
             <div className="text-3xl font-bold font-mono">
@@ -53,7 +53,7 @@ export const ResourcePlanetItem: FC<Props> = ({ resource, canMine, index }) => {
               •{" "}
               {resource.remainingAmount === resource.totalAmount
                 ? "Не тронуто"
-                : `${((resource.remainingAmount / resource.totalAmount) * 100).toFixed(0)}% left`}
+                : `${(((resource.remainingAmount || resource.current) / resource.totalAmount) * 100).toFixed(0)}% left`}
             </div>
           </div>
         </div>
@@ -61,17 +61,20 @@ export const ResourcePlanetItem: FC<Props> = ({ resource, canMine, index }) => {
 
       {/* Прогресс-бар */}
       <ProgressBarResource index={index} resource={resource} />
-      <div className="flex flex-col justify-center gap-2 mt-4">
-        {isRunnigMine ? (
-          <MiningProcess />
-        ) : (
-          <ButtonMine
-            canMine={canMine}
-            rarity={resource.rarity}
-            onClick={() => setIsRunnigMine(true)}
-          />
-        )}
-      </div>
+      {canMine ||
+        (isRunningMine && (
+          <div className="flex flex-col justify-center gap-2 mt-4">
+            {isRunningMine ? (
+              <MiningProcess />
+            ) : (
+              <ButtonMine
+                canMine={canMine}
+                rarity={resource.rarity}
+                onClick={() => setIsRunningMine(true)}
+              />
+            )}
+          </div>
+        ))}
     </motion.div>
   );
 };

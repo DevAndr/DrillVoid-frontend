@@ -1,17 +1,29 @@
 import { createStore } from "zustand";
-import { devtools } from "zustand/middleware";
+import { devtools, persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { useStore } from "zustand/react";
 
-import { GameDataState, scheduleDataSlice } from "@/store/gameDataSlice.ts";
+import {
+  GameDataState,
+  persistOptionsGameData,
+  scheduleDataSlice,
+} from "@/store/gameDataSlice.ts";
+import {
+  planetDetailSlice,
+  PlanetDetailState,
+} from "@/store/planetDetailSlice.ts";
 
-export type BoundState = GameDataState;
+export type BoundState = GameDataState & PlanetDetailState;
 
 export const store = createStore<BoundState>()(
   devtools(
-    immer((...args) => ({
-      ...scheduleDataSlice(...args),
-    })),
+    persist(
+      immer((...args) => ({
+        ...scheduleDataSlice(...args),
+        ...planetDetailSlice(...args),
+      })),
+      persistOptionsGameData(),
+    ),
     {
       name: "ScheduleStringsStore",
     },
@@ -19,3 +31,5 @@ export const store = createStore<BoundState>()(
 );
 
 export const useGameDataState = () => useStore(store, (s) => s.gameDataState);
+export const usePlanetDetailsState = () =>
+  useStore(store, (s) => s.planetDetailsState);

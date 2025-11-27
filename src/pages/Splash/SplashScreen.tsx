@@ -3,19 +3,48 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 import { CenteredLayout } from "@/layouts";
+import { useGetGameData } from "@/api/game-data/useGetGameData.ts";
+import { createSeedByPosition } from "@/utils";
+import { useGameDataState } from "@/store/store.ts";
+import { useGetMiningProgressMutation } from "@/api/ship/useGetMiningProgress.ts";
+
+const uid = "3eece72d-2880-454c-a66e-702b8e84f7df";
 
 export const SplashScreen = () => {
   const navigate = useNavigate();
+  const { setSeed } = useGameDataState();
+
+  const { mutate: getGameData } = useGetGameData();
+  const { mutate: getMiningProgress } = useGetMiningProgressMutation();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const load = async () => {
       await new Promise((resolve) => {
-        setInterval(() => {
-          setIsLoading(false);
-          navigate("/app");
-          resolve(1);
-        }, 3000);
+        getGameData(
+          { uid },
+          {
+            onSuccess: (resp) => {
+              const seed = createSeedByPosition(resp.x, resp.y, resp.z);
+
+              setSeed(seed);
+
+              getMiningProgress(
+                { uid },
+                {
+                  onSuccess: () => {},
+                  onSettled: () => {
+                    setInterval(() => {
+                      setIsLoading(false);
+                      navigate("/app/slides/mine");
+                      resolve(1);
+                    }, 3000);
+                  },
+                },
+              );
+            },
+          },
+        );
       });
     };
 

@@ -5,11 +5,14 @@ import { ResourcePlanetItem } from "@/modules/Planet/PlanetDetails/ResourcePlane
 
 interface Props {
   isActive: boolean;
-  canMine: boolean;
   resources: ResourcePlanet[];
+  isAccessMining?: boolean;
 }
 
-export const ResourceListPlanet: FC<Props> = ({ canMine, resources }) => {
+export const ResourceListPlanet: FC<Props> = ({
+  resources,
+  isAccessMining,
+}) => {
   const sortedResources = useMemo(
     () =>
       resources.sort(
@@ -31,7 +34,7 @@ export const ResourceListPlanet: FC<Props> = ({ canMine, resources }) => {
         {sortedResources.map((res: any, i: number) => (
           <ResourcePlanetItem
             key={i}
-            canMine={canMine}
+            canMine={isAccessMining}
             index={i}
             resource={res}
           />

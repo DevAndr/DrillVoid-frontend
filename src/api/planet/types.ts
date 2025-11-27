@@ -82,11 +82,13 @@ export type ResourcePlanet = {
   rarity: Rarity;
   totalAmount: number;
   remainingAmount: number;
+  current: number;
 };
 
 export type Planet = {
   name: string;
   biome: PlanetType;
+  type: PlanetType;
   rarity: Rarity;
   resources: ResourcePlanet[];
   seed: string;

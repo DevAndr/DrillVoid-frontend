@@ -76,7 +76,7 @@ export const MiningProcess = () => {
 
         {/* Прогресс добычи */}
         <div className="max-w-lg mx-auto space-y-6">
-          <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-6 border border-white/10">
+          <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-6 mb-4 border border-white/10">
             <div className="flex justify-between items-center mb-4">
               <span className="text-xl">{"OBSIDIAN"}</span>
               <span className="text-3xl font-bold font-mono">{100_000}</span>
