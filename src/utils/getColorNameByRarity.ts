@@ -7,9 +7,9 @@ export const getColorNameByRarity = (rarity: Rarity) => {
     case Rarity.UNCOMMON:
       return "text-indigo-500";
     case Rarity.RARE:
-      return "text-amber-500";
-    case Rarity.EPIC:
       return "text-purple-500";
+    case Rarity.EPIC:
+      return "text-amber-500";
     case Rarity.LEGENDARY:
       return "text-red-500";
   }

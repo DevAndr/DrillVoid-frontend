@@ -21,8 +21,6 @@ export const PlanetList = () => {
     navigate(`/app/planet/${planet.seed}`);
   };
 
-  console.log({ planets });
-
   return (
     <div className="p-4 mb-5 w-full">
       <h1 className="text-2xl text-center text-white mb-8 tracking-widest">
