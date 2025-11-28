@@ -4,6 +4,7 @@ import { lazy } from "react";
 import { SplashScreen } from "@/pages/Splash/SplashScreen.tsx";
 import { SlidesPage } from "@/pages/slides/SlidesPage.tsx";
 import PlanetPage from "@/pages/Planet/PlanetPage.tsx";
+import { AuthPage } from "@/pages/Auth/AuthPage.tsx";
 const MineSlide = lazy(() => import("@/pages/slides/MineSlide/MineSlide.tsx"));
 const AlertsSlide = lazy(
   () => import("@/pages/slides/AlertsSlide/AlertsSlide.tsx"),
@@ -16,6 +17,12 @@ const UpgradeSlide = lazy(
 );
 const ProfileSlide = lazy(
   () => import("@/pages/slides/ProfileSlide/ProfileSlide.tsx"),
+);
+const SignInPageLoadable = lazy(
+  () => import("@/pages/Auth/SignIn/SignInPage.tsx"),
+);
+const SignUpPageLoadable = lazy(
+  () => import("@/pages/Auth/SignUp/SignUpPage.tsx"),
 );
 
 function App() {
@@ -30,6 +37,11 @@ function App() {
           <Route element={<TasksSlide />} path={"tasks"} />
           <Route element={<UpgradeSlide />} path={"upgrade"} />
           <Route element={<ProfileSlide />} path={"profile"} />
+        </Route>
+
+        <Route element={<AuthPage />} path={"auth/*"}>
+          <Route element={<SignUpPageLoadable />} path={"signUp"} />
+          <Route element={<SignInPageLoadable />} path={"signIn"} />
         </Route>
 
         <Route element={<PlanetPage />} path={"planet/:seed"} />

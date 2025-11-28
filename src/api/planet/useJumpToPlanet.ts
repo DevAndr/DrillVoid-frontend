@@ -3,9 +3,12 @@ import { AxiosError } from "axios";
 
 import axiosInstance from "@/api/axios/instance.ts";
 import { ResponseServer } from "@/api/common/types.ts";
-import { JumpResponseData } from "@/api/planet/types.ts";
+import { JumpResponseData, Point3D } from "@/api/planet/types.ts";
 
-type Request = {};
+type Request = {
+  uid: string;
+  target: Point3D;
+};
 
 type Response = ResponseServer<JumpResponseData>;
 

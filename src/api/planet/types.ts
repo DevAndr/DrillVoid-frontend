@@ -1,4 +1,5 @@
 import { MetaDataTIme, Rarity } from "@/api/common/types.ts";
+import { User } from "@/api/user/types.ts";
 
 export type Point3D = {
   x: number;
@@ -93,6 +94,7 @@ export type Planet = {
   resources: ResourcePlanet[];
   seed: string;
   position: Point3D;
+  owner?: User;
 };
 
 export type PlanetDetails = Planet & {

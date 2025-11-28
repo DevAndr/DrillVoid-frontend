@@ -1,17 +1,19 @@
 import { FC, useMemo } from "react";
+import clsx from "clsx";
 
 import { ResourcePlanet } from "@/api/planet/types.ts";
 import { ResourcePlanetItem } from "@/modules/Planet/PlanetDetails/ResourcePlanetItem.tsx";
 
 interface Props {
-  isActive: boolean;
   resources: ResourcePlanet[];
   isAccessMining?: boolean;
+  small?: boolean;
 }
 
 export const ResourceListPlanet: FC<Props> = ({
   resources,
   isAccessMining,
+  small,
 }) => {
   const sortedResources = useMemo(
     () =>
@@ -26,7 +28,7 @@ export const ResourceListPlanet: FC<Props> = ({
   );
 
   return (
-    <div className="max-w-2xl mx-auto px-6">
+    <div className={clsx("max-w-2xl mx-auto", small ? "px-0" : "px-6")}>
       <h2 className="text-2xl font-bold mb-6 text-center">
         Available Resources
       </h2>

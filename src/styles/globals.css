@@ -19,5 +19,10 @@
     animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
+body {
+    font-family: "Rubik", sans-serif;
+    font-optical-sizing: auto;
+}
+
 @config "../../tailwind.config.js"
 

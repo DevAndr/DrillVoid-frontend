@@ -61,20 +61,19 @@ export const ResourcePlanetItem: FC<Props> = ({ resource, canMine, index }) => {
 
       {/* Прогресс-бар */}
       <ProgressBarResource index={index} resource={resource} />
-      {canMine ||
-        (isRunningMine && (
-          <div className="flex flex-col justify-center gap-2 mt-4">
-            {isRunningMine ? (
-              <MiningProcess />
-            ) : (
-              <ButtonMine
-                canMine={canMine}
-                rarity={resource.rarity}
-                onClick={() => setIsRunningMine(true)}
-              />
-            )}
-          </div>
-        ))}
+      {(canMine || isRunningMine) && (
+        <div className="flex flex-col justify-center gap-2 mt-4">
+          {isRunningMine ? (
+            <MiningProcess />
+          ) : (
+            <ButtonMine
+              canMine={canMine}
+              rarity={resource.rarity}
+              onClick={() => setIsRunningMine(true)}
+            />
+          )}
+        </div>
+      )}
     </motion.div>
   );
 };

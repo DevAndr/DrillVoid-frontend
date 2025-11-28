@@ -14,10 +14,12 @@ import PlanetIcon from "@/assets/icons/Planet.tsx";
 import { RarityPlanetLabel } from "@/modules/Planet/PlanetList/PlanetItem/components/RarityPlanetLabel.tsx";
 import { StatisticPlanet } from "@/modules/Planet/PlanetDetails/Statistic/StatisticPlanet.tsx";
 import { ResourceListPlanet } from "@/modules/Planet/PlanetDetails/ResourceListPlanet/ResourceListPlanet.tsx";
-import { usePlanetDetailsState } from "@/store/store.ts";
+import { useGameDataState, usePlanetDetailsState } from "@/store/store.ts";
 import { useJumpToPlanet } from "@/api/planet/useJumpToPlanet.ts";
+import { OwnerPlanet } from "@/modules/Planet/PlanetDetails/OwnerPlanet/OwnerPlanet.tsx";
 
 const PlanetPage = () => {
+  const { setSeed } = useGameDataState();
   const { isAccessMining } = usePlanetDetailsState();
   const navigate = useNavigate();
   const { seed } = useParams();
@@ -48,9 +50,13 @@ const PlanetPage = () => {
 
   const jumpToPlanetHandler = () => {
     jumpToPlanet(
-      { seed },
+      {
+        uid: "3eece72d-2880-454c-a66e-702b8e84f7df",
+        target: data.position,
+      },
       {
         onSuccess: (r) => {
+          setSeed(r.planet.seed);
           console.log("success", r);
         },
       },
@@ -63,7 +69,8 @@ const PlanetPage = () => {
       <div
         className="fixed inset-0 opacity-50"
         style={{
-          backgroundImage: biomeGradients[data.biome] || biomeGradients.DEFAULT,
+          backgroundImage:
+            biomeGradients[data?.biome || data?.type] || biomeGradients.DEFAULT,
         }}
       />
 
@@ -102,7 +109,7 @@ const PlanetPage = () => {
                     "from-purple-600 via-pink-600 to-indigo-700",
                 )}
               >
-                <PlanetIcon biome={data.biome} size={240} />
+                <PlanetIcon biome={data.biome || data.type} size={240} />
               </div>
             </div>
           </motion.div>
@@ -112,10 +119,11 @@ const PlanetPage = () => {
           </h1>
           <div className="flex items-center justify-center gap-4 mt-3 text-xs">
             <span className="px-2 py-1 rounded-full bg-white/10 border border-white/20">
-              {data.biome}
+              {data.biome || data.type}
             </span>
             <RarityPlanetLabel rarity={data.rarity} />
           </div>
+          <OwnerPlanet owner={data.owner} />
         </div>
 
         {/* Статистика */}

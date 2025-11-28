@@ -11,6 +11,7 @@ import PlanetIcon from "@/assets/icons/Planet.tsx";
 import { RarityPlanetLabel } from "@/modules/Planet/PlanetList/PlanetItem/components/RarityPlanetLabel.tsx";
 import { StatisticPlanet } from "@/modules/Planet/PlanetDetails/Statistic/StatisticPlanet.tsx";
 import { ResourceListPlanet } from "@/modules/Planet/PlanetDetails/ResourceListPlanet/ResourceListPlanet.tsx";
+import { OwnerPlanet } from "@/modules/Planet/PlanetDetails/OwnerPlanet/OwnerPlanet.tsx";
 
 export const CurrentPlanet = () => {
   const { seed } = useGameDataState();
@@ -66,24 +67,26 @@ export const CurrentPlanet = () => {
                     "from-purple-600 via-pink-600 to-indigo-700",
                 )}
               >
-                <PlanetIcon biome={data.type} size={240} />
+                <PlanetIcon biome={data.biome || data.type} size={240} />
               </div>
             </div>
           </motion.div>
 
-          <h1 className="text-4xl md:text-5xl font-bold tracking-widest px-4 ">
+          <h1 className="text-4xl md:text-5xl font-bold tracking-widest ">
             {data.name}
           </h1>
           <div className="flex items-center justify-center gap-4 mt-3 text-xs">
             <span className="px-2 py-1 rounded-full bg-white/10 border border-white/20">
-              {data.type}
+              {data.biome || data.type}
             </span>
             <RarityPlanetLabel rarity={data.rarity} />
           </div>
+          <OwnerPlanet owner={data.owner} />
         </div>
 
         {/* Статистика */}
         <StatisticPlanet
+          small
           countResources={data.resources.length}
           seed={data.seed}
           totalAmountResources={totalResources}
@@ -91,8 +94,8 @@ export const CurrentPlanet = () => {
 
         {/* Список ресурсов */}
         <ResourceListPlanet
+          small
           isAccessMining={isAccessMining}
-          isActive={false}
           resources={data.resources}
         />
       </div>
