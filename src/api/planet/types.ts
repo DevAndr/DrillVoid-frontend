@@ -79,6 +79,7 @@ export enum ResourceType {
 }
 
 export type ResourcePlanet = {
+  id: string;
   type: ResourceType;
   rarity: Rarity;
   totalAmount: number;

@@ -1,34 +1,31 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 
-import { TotalMiningPlanet } from "@/api/planet/types.ts";
 import { ResponseServer } from "@/api/common/types.ts";
 import axiosInstance from "@/api/axios/instance.ts";
+import { MiningResponse } from "@/api/ship/types.ts";
 
-type Request = {
-  uid: string;
-};
+type Request = {};
 
-type Response = ResponseServer<TotalMiningPlanet>;
+type Response = ResponseServer<MiningResponse>;
 
-const getMiningProgress = async ({ uid }: Request) => {
-  const url = `/ship/progress/${uid}`;
+const getMiningProgress = async () => {
+  const url = `/ship/progress`;
 
   const { data } = await axiosInstance.get<Response>(url);
 
   return data.data;
 };
 
-export const useGetMiningProgress = (req: Request) => {
-  return useQuery<TotalMiningPlanet, AxiosError>({
-    queryKey: ["miningProgress", JSON.stringify(req.uid)],
-    queryFn: () => getMiningProgress(req),
-    enabled: !!req.uid,
+export const useGetMiningProgress = () => {
+  return useQuery<MiningResponse, AxiosError>({
+    queryKey: ["miningProgress"],
+    queryFn: getMiningProgress,
   });
 };
 
 export const useGetMiningProgressMutation = () => {
-  return useMutation<TotalMiningPlanet, AxiosError, Request>({
+  return useMutation<MiningResponse, AxiosError, Request>({
     mutationKey: ["miningProgress"],
     mutationFn: getMiningProgress,
   });

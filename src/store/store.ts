@@ -7,11 +7,11 @@ import {
   GameDataState,
   persistOptionsGameData,
   scheduleDataSlice,
-} from "@/store/gameDataSlice.ts";
+} from "@/store/gameData.slice.ts";
 import {
   planetDetailSlice,
   PlanetDetailState,
-} from "@/store/planetDetailSlice.ts";
+} from "@/store/planetDetail.slice.ts";
 
 export type BoundState = GameDataState & PlanetDetailState;
 

@@ -20,6 +20,10 @@ interface Props {
 export const ResourcePlanetItem: FC<Props> = ({ resource, canMine, index }) => {
   const [isRunningMine, setIsRunningMine] = useState(false);
 
+  const mineHandler = () => {
+    setIsRunningMine(true);
+  };
+
   return (
     <motion.div
       animate={{ opacity: 1, x: 0 }}
@@ -69,7 +73,7 @@ export const ResourcePlanetItem: FC<Props> = ({ resource, canMine, index }) => {
             <ButtonMine
               canMine={canMine}
               rarity={resource.rarity}
-              onClick={() => setIsRunningMine(true)}
+              onClick={mineHandler}
             />
           )}
         </div>

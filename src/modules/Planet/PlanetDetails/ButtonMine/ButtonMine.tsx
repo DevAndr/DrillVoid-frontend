@@ -33,7 +33,7 @@ export const ButtonMine: FC<Props> = ({ rarity, canMine, onClick }) => {
         disabled={!canMine}
         onPress={onClick}
       >
-        MINE
+        Mine
       </Button>
     )
   );

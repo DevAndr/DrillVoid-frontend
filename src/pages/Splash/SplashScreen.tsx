@@ -5,14 +5,15 @@ import { useEffect, useState } from "react";
 import { CenteredLayout } from "@/layouts";
 import { useGetGameData } from "@/api/game-data/useGetGameData.ts";
 import { createSeedByPosition } from "@/utils";
-import { useGameDataState } from "@/store/store.ts";
+import { useGameDataState, usePlanetDetailsState } from "@/store/store.ts";
 import { useGetMiningProgressMutation } from "@/api/ship/useGetMiningProgress.ts";
-import { TypeGameScreen } from "@/store/gameDataSlice.ts";
+import { TypeGameScreen } from "@/store/gameData.slice.ts";
 import { useCurrentUser } from "@/api/user/useCurrentUser.ts";
 
 export const SplashScreen = () => {
   const navigate = useNavigate();
   const { setSeed, setCurrentGameScreen } = useGameDataState();
+  const { setIsAccessMining } = usePlanetDetailsState();
 
   const { mutate: getGameData } = useGetGameData();
   const { mutate: getMiningProgress } = useGetMiningProgressMutation();
@@ -36,10 +37,13 @@ export const SplashScreen = () => {
                   setCurrentGameScreen(TypeGameScreen.CURRENT_PLANET);
 
                   getMiningProgress(
-                    { uid },
+                    {},
                     {
                       onSuccess: () => {
                         setCurrentGameScreen(TypeGameScreen.MINING);
+                      },
+                      onError: () => {
+                        setIsAccessMining(true);
                       },
                       onSettled: () => {
                         setInterval(() => {

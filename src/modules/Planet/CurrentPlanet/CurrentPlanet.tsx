@@ -46,7 +46,7 @@ export const CurrentPlanet = () => {
       <div className="relative pb-32 pt-20">
         {/* Заголовок + большая иконка планеты */}
         <div className="text-center mb-10">
-          <div className="text-xl">Your position</div>
+          <h1 className="text-3xl mb-4 font-medium">Your position</h1>
           <motion.div
             animate={{ scale: 1, rotate: 0 }}
             className="inline-block"

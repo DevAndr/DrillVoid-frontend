@@ -3,7 +3,7 @@ import { Boxes, Drone, MapPin, Search } from "lucide-react";
 
 import { useGameDataState } from "@/store/store.ts";
 import { MiningProcess } from "@/modules/Mining/MiningProcess/MiningProcess.tsx";
-import { TypeGameScreen } from "@/store/gameDataSlice.ts";
+import { TypeGameScreen } from "@/store/gameData.slice.ts";
 import { PlanetList } from "@/modules/Planet/PlanetList/PlanetList.tsx";
 import { Resources } from "@/modules/Resources/Resources.tsx";
 import { Ship } from "@/modules/Ship/Ship.tsx";
