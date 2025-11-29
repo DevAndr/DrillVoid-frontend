@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Pickaxe, Zap } from "lucide-react";
 import { Spinner } from "@heroui/spinner";
 import { memo, useEffect, useMemo, useState } from "react";
+import clsx from "clsx";
 
 import { useGetMiningProgress } from "@/api/ship/useGetMiningProgress.ts";
 import { formatNumberShort, isDefined } from "@/utils";
@@ -9,6 +10,14 @@ import useSecondsCountdown from "@/hooks/useSecondsCountdown.ts";
 import { CenteredLayout } from "@/layouts";
 import { useGetPlanetBySeed } from "@/api/planet/useGetPlanetBySeed.ts";
 import { millisecondsToHours } from "@/utils/millisecondsToHours.ts";
+
+const colorIconRarity = {
+  COMMON: "text-gray-400",
+  UNCOMMON: "text-blue-400",
+  RARE: "text-purple-400",
+  EPIC: "text-pink-400",
+  LEGENDARY: "text-yellow-400",
+};
 
 const rarityConfig = {
   COMMON: {
@@ -72,6 +81,7 @@ export const MiningProcess = () => {
   const config = rarityConfig[currentResource?.rarity || "COMMON"];
   const resourceRarity = currentResource?.rarity || "COMMON";
   const textGlowClass = GlowClassRarity[resourceRarity];
+  const colorIcon = colorIconRarity[resourceRarity];
 
   useEffect(() => {
     if (!isDefined(dataMining)) return;
@@ -163,7 +173,7 @@ export const MiningProcess = () => {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-5 text-center border border-white/10">
-              <Zap className="w-8 h-8 mx-auto mb-2 text-yellow-400" />
+              <Zap className={clsx("w-8 h-8 mx-auto mb-2", colorIcon)} />
               <div className="text-3xl font-bold font-mono text-green-400">
                 +{dataMining.miningRate}
               </div>
@@ -171,7 +181,7 @@ export const MiningProcess = () => {
             </div>
 
             <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-5 text-center border border-white/10">
-              <Pickaxe className="w-8 h-8 mx-auto mb-2 text-cyan-400" />
+              <Pickaxe className={clsx("w-8 h-8 mx-auto mb-2", colorIcon)} />
               <div className="text-3xl font-bold font-mono">
                 {millisecondsToHours(dataMining.remainingMs)}
               </div>
