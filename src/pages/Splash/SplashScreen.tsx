@@ -12,7 +12,8 @@ import { useCurrentUser } from "@/api/user/useCurrentUser.ts";
 
 export const SplashScreen = () => {
   const navigate = useNavigate();
-  const { setSeed, setCurrentGameScreen } = useGameDataState();
+  const { setSeed, setCurrentGameScreen, setUsableButtons } =
+    useGameDataState();
   const { setIsAccessMining } = usePlanetDetailsState();
 
   const { mutate: getGameData } = useGetGameData();
@@ -41,6 +42,7 @@ export const SplashScreen = () => {
                     {
                       onSuccess: () => {
                         setCurrentGameScreen(TypeGameScreen.MINING);
+                        setUsableButtons(false);
                       },
                       onError: () => {
                         setIsAccessMining(true);

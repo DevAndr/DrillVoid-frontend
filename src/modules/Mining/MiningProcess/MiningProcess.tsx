@@ -138,7 +138,7 @@ export const MiningProcess = () => {
             <div className="flex justify-between items-center mb-4">
               <span className="text-xl">{currentResource?.type}</span>
               <span className="text-3xl font-bold font-mono">
-                {currentMinded}
+                {formatNumberShort(currentMinded)}
               </span>
             </div>
 

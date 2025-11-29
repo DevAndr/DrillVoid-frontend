@@ -15,8 +15,10 @@ export interface GameDataState {
     isMining: boolean;
     currentGameScreen: TypeGameScreen;
     seed: string | null;
+    isUsableButtons: boolean;
 
     setIsMining: (value: boolean) => void;
+    setUsableButtons: (value: boolean) => void;
     setCurrentGameScreen: (value: TypeGameScreen) => void;
     setSeed: (value: string) => void;
   };
@@ -32,9 +34,14 @@ export const scheduleDataSlice: StateCreator<
     isMining: false,
     currentGameScreen: TypeGameScreen.MINING,
     seed: null,
+    isUsableButtons: true,
     setIsMining: (value: boolean) =>
       set((state) => {
         state.gameDataState.isMining = value;
+      }),
+    setUsableButtons: (value: boolean) =>
+      set((state) => {
+        state.gameDataState.isUsableButtons = value;
       }),
     setCurrentGameScreen: (value) => {
       set((state) => {
