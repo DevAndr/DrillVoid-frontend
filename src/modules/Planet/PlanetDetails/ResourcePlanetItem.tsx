@@ -20,6 +20,9 @@ interface Props {
 export const ResourcePlanetItem: FC<Props> = ({ resource, canMine, index }) => {
   const [isRunningMine, setIsRunningMine] = useState(false);
 
+  const currentAmount = resource.remainingAmount || resource.current;
+  const isEmptyResource = resource.current <= 0;
+
   const mineHandler = () => {
     setIsRunningMine(true);
   };
@@ -55,26 +58,30 @@ export const ResourcePlanetItem: FC<Props> = ({ resource, canMine, index }) => {
             </div>
             <div className="text-sm opacity-70 mt-1">
               •{" "}
-              {resource.remainingAmount === resource.totalAmount
+              {currentAmount === resource.totalAmount
                 ? "Не тронуто"
-                : `${(((resource.remainingAmount || resource.current) / resource.totalAmount) * 100).toFixed(0)}% left`}
+                : `${((currentAmount / resource.totalAmount) * 100).toFixed(0)}% left`}
             </div>
           </div>
         </div>
       </div>
 
       {/* Прогресс-бар */}
-      <ProgressBarResource index={index} resource={resource} />
+      {!isEmptyResource && (
+        <ProgressBarResource index={index} resource={resource} />
+      )}
       {(canMine || isRunningMine) && (
         <div className="flex flex-col justify-center gap-2 mt-4">
           {isRunningMine ? (
             <MiningProcess />
           ) : (
-            <ButtonMine
-              canMine={canMine}
-              rarity={resource.rarity}
-              onClick={mineHandler}
-            />
+            !isEmptyResource && (
+              <ButtonMine
+                canMine={canMine}
+                rarity={resource.rarity}
+                onClick={mineHandler}
+              />
+            )
           )}
         </div>
       )}

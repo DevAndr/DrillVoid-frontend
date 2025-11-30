@@ -12,6 +12,10 @@ import { CenteredLayout } from "@/layouts";
 import { useGetPlanetBySeed } from "@/api/planet/useGetPlanetBySeed.ts";
 import { millisecondsToHours } from "@/utils/millisecondsToHours.ts";
 import { MiningSessionStatus } from "@/api/ship/types.ts";
+import { useHideNavButtons } from "@/modules/Mining/hooks/useHideNavButtons.ts";
+import { useClaimMining } from "@/api/ship/useClaimMining.ts";
+import { useGameDataState, usePlanetDetailsState } from "@/store/store.ts";
+import { TypeGameScreen } from "@/store/gameData.slice.ts";
 
 const colorIconRarity = {
   COMMON: "text-gray-400",
@@ -20,7 +24,6 @@ const colorIconRarity = {
   EPIC: "text-pink-400",
   LEGENDARY: "text-yellow-400",
 };
-
 const rarityConfig = {
   COMMON: {
     color: "gray",
@@ -58,11 +61,17 @@ const GlowClassRarity = {
 };
 
 export const MiningProcess = () => {
+  const { setIsMining, setUsableButtons, setCurrentGameScreen } =
+    useGameDataState();
+  const { setIsAccessMining } = usePlanetDetailsState();
+  const { mutate: claimMining } = useClaimMining();
   const { data: dataMining, isLoading } = useGetMiningProgress();
   const { data: dataPlanet, isLoading: isLoadingPlanet } = useGetPlanetBySeed({
     seed: dataMining?.planetSeed,
   });
   const [currentMinded, setCurrentMinded] = useState(dataMining?.mined || 0);
+
+  useHideNavButtons(dataMining);
 
   const { formattedLabel } = useSecondsCountdown({
     endDate: dataMining?.finishedAt,
@@ -87,13 +96,26 @@ export const MiningProcess = () => {
 
   useEffect(() => {
     if (!isDefined(dataMining)) return;
-
     setCurrentMinded(dataMining.mined);
 
-    if (currentMinded >= dataMining.maxAmount) return;
+    if (
+      dataMining.status === MiningSessionStatus.FINISHED ||
+      dataMining.mined >= dataMining.estimatedAmount
+    ) {
+      return;
+    }
 
     const interval = setInterval(() => {
-      setCurrentMinded((prev) => Math.floor(prev + dataMining.miningRate / 60));
+      setCurrentMinded((prev) => {
+        const next = prev + dataMining.miningRate / 60;
+
+        // Останавливаем на maxAmount
+        if (next >= dataMining.maxAmount) {
+          return dataMining.maxAmount;
+        }
+
+        return Math.floor(next);
+      });
     }, 1000);
 
     return () => clearInterval(interval);
@@ -101,16 +123,19 @@ export const MiningProcess = () => {
 
   const progressPercent = useMemo(
     () =>
-      +formatNumberShort((currentMinded / (dataMining?.maxAmount || 1)) * 100),
+      +formatNumberShort(
+        (currentMinded / (dataMining?.estimatedAmount || 1)) * 100,
+      ),
     [dataMining, currentMinded],
   );
 
   const showButtonClaim = useMemo(() => {
     if (!isDefined(dataMining)) return false;
 
-    if (currentMinded >= dataMining.maxAmount) return true;
-
-    if (dataMining.status === MiningSessionStatus.FINISHED) return true;
+    return (
+      currentMinded >= dataMining.estimatedAmount ||
+      dataMining.status === MiningSessionStatus.FINISHED
+    );
   }, [dataMining, currentMinded]);
 
   if (isLoading || isLoadingPlanet) {
@@ -122,6 +147,17 @@ export const MiningProcess = () => {
   }
 
   if (!isDefined(dataMining)) return null;
+
+  const claimHandler = () => {
+    claimMining(undefined, {
+      onSuccess: () => {
+        setIsMining(false);
+        setUsableButtons(true);
+        setIsAccessMining(true);
+        setCurrentGameScreen(TypeGameScreen.CURRENT_PLANET);
+      },
+    });
+  };
 
   return (
     <div className="bg-black text-white overflow-hidden relative">
@@ -177,8 +213,15 @@ export const MiningProcess = () => {
                 {progressPercent}%
               </div>
             </div>
-
-            <div className="flex justify-center mt-2">{formattedLabel}</div>
+            {showButtonClaim ? (
+              <div className="flex mt-4 justify-center">
+                <Button color="primary" onPress={claimHandler}>
+                  Забрать
+                </Button>
+              </div>
+            ) : (
+              <div className="flex justify-center mt-2">{formattedLabel}</div>
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -199,12 +242,6 @@ export const MiningProcess = () => {
             </div>
           </div>
         </div>
-
-        {showButtonClaim && (
-          <div className="flex mt-4 justify-center">
-            <Button color="primary">Забрать</Button>
-          </div>
-        )}
       </div>
     </div>
   );

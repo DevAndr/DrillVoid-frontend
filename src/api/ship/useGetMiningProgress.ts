@@ -10,7 +10,7 @@ type Request = {};
 type Response = ResponseServer<MiningResponse>;
 
 const getMiningProgress = async () => {
-  const url = `/ship/progress`;
+  const url = "/ship/progress";
 
   const { data } = await axiosInstance.get<Response>(url);
 

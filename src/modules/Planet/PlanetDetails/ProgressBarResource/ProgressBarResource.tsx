@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useMemo } from "react";
 import { motion } from "framer-motion";
 import clsx from "clsx";
 
@@ -10,11 +10,18 @@ interface Props {
 }
 
 export const ProgressBarResource: FC<Props> = ({ resource, index }) => {
+  const progress = useMemo(
+    () =>
+      ((resource.remainingAmount || resource.current) / resource.totalAmount) *
+      100,
+    [resource],
+  );
+
   return (
     <div className="mt-3 h-3 bg-white/10 rounded-full overflow-hidden">
       <motion.div
         animate={{
-          width: `${(resource.remainingAmount / resource.totalAmount) * 100}%`,
+          width: `${progress}%`,
         }}
         className={clsx(
           "h-full",
