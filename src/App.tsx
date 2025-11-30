@@ -1,10 +1,10 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { lazy } from "react";
 
-import { SplashScreen } from "@/pages/Splash/SplashScreen.tsx";
 import { SlidesPage } from "@/pages/slides/SlidesPage.tsx";
 import PlanetPage from "@/pages/Planet/PlanetPage.tsx";
 import { AuthPage } from "@/pages/Auth/AuthPage.tsx";
+import SplashScreen from "@/pages/Splash/SplashScreen.tsx";
 const MineSlide = lazy(() => import("@/pages/slides/MineSlide/MineSlide.tsx"));
 const AlertsSlide = lazy(
   () => import("@/pages/slides/AlertsSlide/AlertsSlide.tsx"),
@@ -29,14 +29,15 @@ function App() {
   return (
     <Routes>
       <Route index element={<SplashScreen />} path={"/"} />
-      <Route element={<Navigate to="/app/slides" />} path="/app" />
-      <Route path={"/app/*"}>
+      <Route element={<Navigate to="/app/slides/mine" />} path="/app" />
+
+      <Route path={"app"}>
         <Route element={<SlidesPage />} path={"slides"}>
-          <Route element={<MineSlide />} path={"mine"} />
           <Route element={<AlertsSlide />} path={"notifications"} />
           <Route element={<TasksSlide />} path={"tasks"} />
           <Route element={<UpgradeSlide />} path={"upgrade"} />
           <Route element={<ProfileSlide />} path={"profile"} />
+          <Route index element={<MineSlide />} path={"mine"} />
         </Route>
 
         <Route element={<AuthPage />} path={"auth/*"}>

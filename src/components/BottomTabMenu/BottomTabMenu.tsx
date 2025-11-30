@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 import {
   Bell,
   CircleCheckBig,
@@ -7,6 +6,7 @@ import {
   Pickaxe,
   User,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 import {
   BottomTabsMenuStyled,
@@ -33,6 +33,13 @@ export const BottomTabMenu = () => {
   //   setSelectedKey(pathName as KeysTab);
   // }, [pathName]);
 
+  const handleSelectionChange = (key: React.Key) => {
+    const newKey = key as KeysTab;
+
+    setSelectedKey(newKey);
+    navigate(`/app/slides/${newKey}`);
+  };
+
   return (
     <BottomTabsMenuStyled
       fullWidth
@@ -40,10 +47,7 @@ export const BottomTabMenu = () => {
       color="primary"
       selectedKey={selectedKey}
       variant="solid"
-      onSelectionChange={(key) => {
-        setSelectedKey(key as KeysTab);
-        navigate(`/app/slides/${key}`);
-      }}
+      onSelectionChange={handleSelectionChange}
     >
       <BottomTabsMenuTabStyled
         key="mine"

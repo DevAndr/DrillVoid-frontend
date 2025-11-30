@@ -10,7 +10,7 @@ import { useGetMiningProgressMutation } from "@/api/ship/useGetMiningProgress.ts
 import { TypeGameScreen } from "@/store/gameData.slice.ts";
 import { useCurrentUser } from "@/api/user/useCurrentUser.ts";
 
-export const SplashScreen = () => {
+const SplashScreen = () => {
   const navigate = useNavigate();
   const { setSeed, setCurrentGameScreen, setUsableButtons } =
     useGameDataState();
@@ -48,10 +48,10 @@ export const SplashScreen = () => {
                         setIsAccessMining(true);
                       },
                       onSettled: () => {
-                        setInterval(() => {
+                        setTimeout(() => {
                           setIsLoading(false);
-                          navigate("/app/slides/mine");
                           resolve(1);
+                          navigate("/app/slides/mine");
                         }, 3000);
                       },
                     },
@@ -76,3 +76,5 @@ export const SplashScreen = () => {
     </CenteredLayout>
   );
 };
+
+export default SplashScreen;

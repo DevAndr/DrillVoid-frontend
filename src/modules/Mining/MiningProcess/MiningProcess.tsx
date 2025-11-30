@@ -3,6 +3,7 @@ import { Pickaxe, Zap } from "lucide-react";
 import { Spinner } from "@heroui/spinner";
 import { memo, useEffect, useMemo, useState } from "react";
 import clsx from "clsx";
+import { Button } from "@heroui/button";
 
 import { useGetMiningProgress } from "@/api/ship/useGetMiningProgress.ts";
 import { formatNumberShort, isDefined } from "@/utils";
@@ -10,6 +11,7 @@ import useSecondsCountdown from "@/hooks/useSecondsCountdown.ts";
 import { CenteredLayout } from "@/layouts";
 import { useGetPlanetBySeed } from "@/api/planet/useGetPlanetBySeed.ts";
 import { millisecondsToHours } from "@/utils/millisecondsToHours.ts";
+import { MiningSessionStatus } from "@/api/ship/types.ts";
 
 const colorIconRarity = {
   COMMON: "text-gray-400",
@@ -103,6 +105,14 @@ export const MiningProcess = () => {
     [dataMining, currentMinded],
   );
 
+  const showButtonClaim = useMemo(() => {
+    if (!isDefined(dataMining)) return false;
+
+    if (currentMinded >= dataMining.maxAmount) return true;
+
+    if (dataMining.status === MiningSessionStatus.FINISHED) return true;
+  }, [dataMining, currentMinded]);
+
   if (isLoading || isLoadingPlanet) {
     return (
       <CenteredLayout>
@@ -189,6 +199,12 @@ export const MiningProcess = () => {
             </div>
           </div>
         </div>
+
+        {showButtonClaim && (
+          <div className="flex mt-4 justify-center">
+            <Button color="primary">Забрать</Button>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -272,3 +288,5 @@ const MiningBarParticles = memo(
     );
   },
 );
+
+MiningBarParticles.displayName = "MiningBarParticles";
