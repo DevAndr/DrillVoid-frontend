@@ -10,7 +10,7 @@ interface Props {
 
 export const ResourceItem: FC<Props> = ({ resource }) => {
   return (
-    <li className="flex justify-between w-full">
+    <li className="flex justify-between w-full   backdrop-blur-xl rounded-md p-2">
       <div className="flex items-center gap-2">
         <Box className="text-lime-200" size={16} />
         <span className="text-amber-200">{resource.resource}</span>

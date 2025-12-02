@@ -10,7 +10,7 @@ interface Props {
 export const ResourceList: FC<Props> = ({ resources }) => {
   return (
     <ul
-      className="w-full p-2 bg-white/5 backdrop-blur-xl rounded-xl overflow-hidden"
+      className="w-full p-2 bg-white/5 backdrop-blur-xl rounded-xl overflow-hidden gap-1 flex flex-col"
       style={{ height: "calc(100vh - 320px)" }}
     >
       {resources.map((resource) => (
