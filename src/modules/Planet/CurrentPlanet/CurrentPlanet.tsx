@@ -96,6 +96,7 @@ export const CurrentPlanet = () => {
         <ResourceListPlanet
           small
           isAccessMining={isAccessMining}
+          planetId={data?.id}
           resources={data.resources}
         />
       </div>

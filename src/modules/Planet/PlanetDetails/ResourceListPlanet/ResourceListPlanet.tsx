@@ -8,12 +8,14 @@ interface Props {
   resources: ResourcePlanet[];
   isAccessMining?: boolean;
   small?: boolean;
+  planetId?: any;
 }
 
 export const ResourceListPlanet: FC<Props> = ({
   resources,
   isAccessMining,
   small,
+  planetId,
 }) => {
   const sortedResources = useMemo(
     () =>
@@ -38,6 +40,7 @@ export const ResourceListPlanet: FC<Props> = ({
             key={i}
             canMine={isAccessMining}
             index={i}
+            planetId={planetId}
             resource={res}
           />
         ))}

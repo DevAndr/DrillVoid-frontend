@@ -96,6 +96,7 @@ export type Planet = {
   seed: string;
   position: Point3D;
   owner?: User;
+  id?: string;
 };
 
 export type PlanetDetails = Planet & {

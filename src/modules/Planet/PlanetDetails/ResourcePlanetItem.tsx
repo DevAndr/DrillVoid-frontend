@@ -3,28 +3,57 @@ import clsx from "clsx";
 import { motion } from "framer-motion";
 
 import { ResourcePlanet } from "@/api/planet/types.ts";
-import { formatNumberShort } from "@/utils";
+import { formatNumberShort, isDefined } from "@/utils";
 import { rarityColors } from "@/modules/Planet/PlanetList/PlanetItem/PlanetItem.tsx";
 import { EpicSparkles, LegendarySparkles } from "@/pages/Planet/PlanetPage.tsx";
 import { getNameRarityForResource } from "@/modules/Planet/PlanetList/PlanetItem/utils/getNameRarityForResource.ts";
 import { ProgressBarResource } from "@/modules/Planet/PlanetDetails/ProgressBarResource/ProgressBarResource.tsx";
 import { MiningProcess } from "@/modules/Planet/PlanetDetails/MiningProcess/MiningProcess.tsx";
 import { ButtonMine } from "@/modules/Planet/PlanetDetails/ButtonMine/ButtonMine.tsx";
+import { useStartMining } from "@/api/ship/useStartMining.ts";
+import { useUserDataState } from "@/store/auth/user.store.ts";
+import { useGameDataState, usePlanetDetailsState } from "@/store/store.ts";
+import { TypeGameScreen } from "@/store/gameData.slice.ts";
 
 interface Props {
   resource: ResourcePlanet;
   canMine?: boolean;
   index: number;
+  planetId?: any;
 }
 
-export const ResourcePlanetItem: FC<Props> = ({ resource, canMine, index }) => {
+export const ResourcePlanetItem: FC<Props> = ({
+  resource,
+  canMine,
+  index,
+  planetId,
+}) => {
+  const { setIsAccessMining } = usePlanetDetailsState();
+  const { user } = useUserDataState();
+  const { setCurrentGameScreen } = useGameDataState();
+  const { mutate: startMining } = useStartMining();
   const [isRunningMine, setIsRunningMine] = useState(false);
 
   const currentAmount = resource.remainingAmount || resource.current;
   const isEmptyResource = resource.current <= 0;
 
   const mineHandler = () => {
-    setIsRunningMine(true);
+    if (isDefined(user) && isDefined(planetId)) {
+      startMining(
+        {
+          uid: user.uid,
+          planetId,
+          resourceId: resource.id,
+        },
+        {
+          onSuccess: () => {
+            setIsRunningMine(true);
+            setIsAccessMining(true);
+            setCurrentGameScreen(TypeGameScreen.MINING);
+          },
+        },
+      );
+    }
   };
 
   return (

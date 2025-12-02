@@ -20,9 +20,9 @@ const startMining = async (req: Request) => {
   return data.data;
 };
 
-export const useStartMining = (req: Request) => {
+export const useStartMining = () => {
   return useMutation<StartMiningResponse, AxiosError, Request>({
     mutationFn: startMining,
-    mutationKey: ["startMining", JSON.stringify(req)],
+    mutationKey: ["startMining"],
   });
 };

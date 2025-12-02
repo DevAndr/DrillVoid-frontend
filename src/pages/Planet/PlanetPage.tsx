@@ -63,6 +63,8 @@ const PlanetPage = () => {
     );
   };
 
+  console.log({ isAccessMining });
+
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden">
       {/* Фон с градиентом биома */}
