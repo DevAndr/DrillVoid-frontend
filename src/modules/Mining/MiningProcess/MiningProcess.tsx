@@ -16,6 +16,7 @@ import { useHideNavButtons } from "@/modules/Mining/hooks/useHideNavButtons.ts";
 import { useClaimMining } from "@/api/ship/useClaimMining.ts";
 import { useGameDataState, usePlanetDetailsState } from "@/store/store.ts";
 import { TypeGameScreen } from "@/store/gameData.slice.ts";
+import { queryClient } from "@/providers/providers.tsx";
 
 const colorIconRarity = {
   COMMON: "text-gray-400",
@@ -150,11 +151,14 @@ export const MiningProcess = () => {
 
   const claimHandler = () => {
     claimMining(undefined, {
-      onSuccess: () => {
+      onSuccess: async () => {
         setIsMining(false);
         setUsableButtons(true);
         setIsAccessMining(true);
         setCurrentGameScreen(TypeGameScreen.CURRENT_PLANET);
+        await queryClient.invalidateQueries({
+          queryKey: ["planetBySeed", dataMining.planetSeed],
+        });
       },
     });
   };

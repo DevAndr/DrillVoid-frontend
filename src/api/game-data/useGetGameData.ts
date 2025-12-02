@@ -5,14 +5,10 @@ import { ResponseServer } from "@/api/common/types.ts";
 import axiosInstance from "@/api/axios/instance.ts";
 import { GameDataResponse } from "@/api/game-data/types.ts";
 
-type Request = {
-  uid: string;
-};
-
 type Response = ResponseServer<GameDataResponse>;
 
-const getGameData = async ({ uid }: Request) => {
-  const url = `/game-data/${uid}`;
+const getGameData = async () => {
+  const url = "/game-data";
 
   const { data } = await axiosInstance.get<Response>(url);
 
@@ -20,7 +16,7 @@ const getGameData = async ({ uid }: Request) => {
 };
 
 export const useGetGameData = () => {
-  return useMutation<GameDataResponse, AxiosError, Request>({
+  return useMutation<GameDataResponse, AxiosError>({
     mutationFn: getGameData,
     mutationKey: ["gameData"],
   });

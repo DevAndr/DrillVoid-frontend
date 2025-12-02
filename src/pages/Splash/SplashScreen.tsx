@@ -25,40 +25,35 @@ const SplashScreen = () => {
     const load = async () => {
       await new Promise((resolve) => {
         getCurrentUser(undefined, {
-          onSuccess: (resp) => {
-            const uid = resp.uid;
+          onSuccess: () => {
+            getGameData(undefined, {
+              onSuccess: (resp) => {
+                const seed = createSeedByPosition(resp.x, resp.y, resp.z);
 
-            getGameData(
-              { uid },
-              {
-                onSuccess: (resp) => {
-                  const seed = createSeedByPosition(resp.x, resp.y, resp.z);
+                setSeed(seed);
+                setCurrentGameScreen(TypeGameScreen.CURRENT_PLANET);
 
-                  setSeed(seed);
-                  setCurrentGameScreen(TypeGameScreen.CURRENT_PLANET);
-
-                  getMiningProgress(
-                    {},
-                    {
-                      onSuccess: () => {
-                        setCurrentGameScreen(TypeGameScreen.MINING);
-                        setUsableButtons(false);
-                      },
-                      onError: () => {
-                        setIsAccessMining(true);
-                      },
-                      onSettled: () => {
-                        setTimeout(() => {
-                          setIsLoading(false);
-                          resolve(1);
-                          navigate("/app/slides/mine");
-                        }, 3000);
-                      },
+                getMiningProgress(
+                  {},
+                  {
+                    onSuccess: () => {
+                      setCurrentGameScreen(TypeGameScreen.MINING);
+                      setUsableButtons(false);
                     },
-                  );
-                },
+                    onError: () => {
+                      setIsAccessMining(true);
+                    },
+                    onSettled: () => {
+                      setTimeout(() => {
+                        setIsLoading(false);
+                        resolve(1);
+                        navigate("/app/slides/mine");
+                      }, 3000);
+                    },
+                  },
+                );
               },
-            );
+            });
           },
         });
       });
